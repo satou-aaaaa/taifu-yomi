@@ -15,7 +15,7 @@ import { checkDepth } from "./depth-check.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const results = [];
 const check = (name, ok, detail = "") => results.push({ name, ok: !!ok, detail: String(detail).slice(0, 400) });
-const firstClose = async (q) => { if (await q.locator("#howto[open]").count()) await q.click("#howto-ok"); if (await q.locator("#core-coach").count()) { await q.evaluate(() => Core.coach.leave()); await q.waitForTimeout(100); } }; // はじめての練習の吹き出しをやめてホームへ（sync-template の migrateFirstQa が足した）
+const firstClose = async (q) => { if (await q.locator("#howto[open]").count()) await q.click("#howto-ok"); if (await q.evaluate(() => !!(window.Core && Core.coach && Core.coach.active()))) { await q.evaluate(() => { Core.coach.leave(); scrollTo(0, 0); }); await q.waitForTimeout(100); } }; // はじめての練習の吹き出しをやめてホームへ（sync-template の migrateFirstQa が足した）
 const G = createRequire(import.meta.url)(path.join(root, "data.js"));
 
 const PINS = "w25r300:9:3.2,def17:1:1.2,w20r820:7:1.2.3,w58r400:11:0.1.2,nippon:0:1.4.0,names:0:0.1.2,w32r520:2:2.3.1,tsuka:1:0.2.1;right:0:1.2,bofu:1:2.0,num1:0:0.1.3,w35r650:9:3.2.0,names:2:0.3.1,w33r500:11:3.0.2,month:0:2.0.4,w43r790:6:2.3.0;bofu:2:3.2,w25r300:2:2.3,w35r650:6:2.3.0,w20r820:7:2.1.3,names:2:2.1.3,w43r790:0:2.0.3,w33r500:0:3.0.2,w53r810:0:1.3.0"; // 過去の日の問題の印（変わったら過去の日の問題が変わった印。種類・言い方は足すだけでも変わる）
